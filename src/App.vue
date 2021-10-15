@@ -1,28 +1,135 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="row justify-content-md-center">
+    <Header />
+    <div class="col-sm-8 mb-5">
+      <table class="table mt-5">
+        <thead class="thead-dark">
+          <tr>
+            <th><h1>Todo App</h1></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(todo, index) in todoList" :key="index">
+            <td class="align-middle w-75">
+              {{ todo.content }}
+            </td>
+            <td class="align-middle text-center w-75">
+              <button class="btn btn-dark btn-sm mx-1" @click="Edit(todo.id)">
+                Éditer
+              </button>
+              <button
+                class="btn btn-danger btn-sm mx-1"
+                @click="Delete(todo.id)"
+              >
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="align-middle ">
+              <div class="form-group">
+                <h4>{{ editMode ? "Éditer" : "Ajouter" }}</h4>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="todoItem.content"
+                  @keyup.enter="TodoItem"
+                />
+              </div>
+            </td>
+            <td class="align-middle text-center w-75">
+              <button class="btn btn-dark btn-sm mx-1" @click="TodoItem">
+                {{ editMode ? "Éditer" : "Ajouter" }}
+              </button>
+              <button
+                v-if="editMode"
+                class="btn btn-danger btn-sm mx-1"
+                @click="Cancel"
+              >
+                Annuler
+              </button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <Footer />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Header from "./components/Header.vue";
+import Footer from "./components/Footer.vue";
+import Axios from "axios";
+const todoUrl = "http://localhost:3500/todos";
 
 export default {
-  name: 'App',
+  data() {
+    return {
+      todoList: {},
+      todoItem: {},
+      editMode: false,
+    };
+  },
   components: {
-    HelloWorld
-  }
-}
+    Header,
+    Footer,
+  },
+  methods: {
+    Edit(id) {
+      this.editMode = true;
+      this.todoItem = this.todoList.find((todo) => todo.id == id);
+      this.inputEmpty = false;
+    },
+    Cancel() {
+      this.editMode = false;
+      this.todoItem = "";
+      this.inputEmpty = false;
+    },
+
+    async TodoItem() {
+      const id = this.todoItem.id;
+
+      if (this.editMode) {
+        await Axios.put(`${todoUrl}/${id}`, this.todoItem);
+        this.editMode = false;
+        this.todoItem.content = "";
+      } else {
+        await Axios.post(todoUrl, this.todoItem);
+
+        this.todoItem.content = "";
+      }
+
+      Axios.get(todoUrl).then((res) => (this.todoList = res.data));
+    },
+    async Delete(id) {
+      await Axios.delete(`${todoUrl}/${id}`);
+      Axios.get(todoUrl).then((res) => (this.todoList = res.data));
+    },
+  },
+  created() {
+    // avoir la liste des todos
+    Axios.get(todoUrl).then((res) => (this.todoList = res.data));
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.bs-tooltip-top {
+  margin-bottom: 10px !important;
+}
+
+.bs-tooltip-right {
+  margin-left: 10px !important;
+}
+.bs-tooltip-bottom {
+  margin-top: 10px !important;
+}
+
+.bs-tooltip-left {
+  margin-right: 10px !important;
 }
 </style>
