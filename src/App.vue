@@ -14,15 +14,19 @@
               {{ todo.content }}
             </td>
             <td class="align-middle text-center w-75">
+               <span data-toggle="tooltip" data-placement="left" title="éditer">
               <button class="btn btn-dark btn-sm mx-1" @click="Edit(todo.id)">
-                Éditer
+                <i class="fas fa-pencil-alt"></i>
               </button>
+               </span>
+               <span data-toggle="tooltip" data-placement="right" title="Supprimer">
               <button
                 class="btn btn-danger btn-sm mx-1"
                 @click="Delete(todo.id)"
               >
-                Supprimer
+                <i class="far fa-trash-alt"></i>
               </button>
+               </span>
             </td>
           </tr>
         </tbody>
