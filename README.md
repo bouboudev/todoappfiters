@@ -25,12 +25,15 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 ---------------------------
-### Lancer le back
+
+## Pour lancer l'application todoAPP
+
+### étape 1 : Lancer le back
 ```
 npm run json
 ```
 
-### Lancer le front
+### étape 2 : Lancer le front
 ```
 npm run serve
 ```
