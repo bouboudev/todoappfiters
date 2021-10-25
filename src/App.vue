@@ -86,12 +86,10 @@ export default {
     Edit(id) {
       this.editMode = true;
       this.todoItem = this.todoList.find((todo) => todo.id == id);
-      this.inputEmpty = false;
     },
     Cancel() {
       this.editMode = false;
       this.todoItem = "";
-      this.inputEmpty = false;
     },
 
     async TodoItem() {
